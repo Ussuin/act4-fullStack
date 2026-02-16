@@ -1,28 +1,36 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
 
-// Middlewares
 app.use(express.json());
 app.use(cors());
 
-// Importar rutas
+// Rutas
 const authRoutes = require("./src/routes/auth");
 const productRoutes = require("./src/routes/products");
 
-// Usar rutas
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
+
+// Conexión a MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB conectado");
+  })
+  .catch(err => {
+    console.error("❌ Error al conectar a MongoDB:", err);
+  });
 
 // Exportar app para pruebas y Vercel
 module.exports = app;
 
-// Si corres localmente, levanta el servidor
+// Levantar servidor local
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
   });
 }
