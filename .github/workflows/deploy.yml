@@ -1,0 +1,31 @@
+name: CI/CD Pipeline
+
+# Se ejecuta cada vez que haces push a la rama main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga tu repositorio
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2. Instala dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # 3. Corre pruebas con Jest
+      - name: Run tests
+        run: npm test
+
+      # 4. Despliega en Vercel
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
